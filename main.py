@@ -7,8 +7,21 @@ alfabeto = {chr(65 + i): i for i in range(26)} #gera o dicionario com as letras 
 
 coords_x, coords_y, rx, ry, fx, fy, f = [],[],[],[],[],[],[]
 
-n_nos = int(input("Quantos nós você quer?: "))
-n_forcas = int(input("Quantas forças existem no esquema?: "))
+def entra(texto, tipo=str):
+    while True:
+        try:
+            valor = tipo(input(texto))
+
+            if valor == "":
+                continue
+
+            return valor
+
+        except ValueError:
+            print(f"Digite um valor válido do tipo {tipo.__name__}")
+
+n_nos = entra("Quantos nós você quer?: ", int)
+n_forcas = entra("Quantas forças existem no esquema?: ", int)
 
 for _ in range(n_forcas):
     f.append(0)
@@ -18,8 +31,8 @@ for _ in range(n_forcas):
 # LOCALIZAÇÕES DOS NÓS
 for i in range(0,n_nos):
     letra = list(alfabeto.keys())[i]
-    temp_x = float(input(f"Coordenada X do ponto {letra} [m]: "))
-    temp_y = float(input(f"Coordenada Y do ponto {letra} [m]: "))
+    temp_x = entra(f"Coordenada X do ponto {letra} [m]: ", float)
+    temp_y = entra(f"Coordenada Y do ponto {letra} [m]: ", float)
 
     print("\n")
 
@@ -28,19 +41,17 @@ for i in range(0,n_nos):
 
 print(coords_x, coords_y)
 
-   
-
 print("\n")
 
 for i in range(0,n_forcas):
 
     #qual nó?
-    local = alfabeto[str(input(f"Em qual nó a Força {i+1} é aplicada?: "))]
+    local = alfabeto[entra(f"Em qual nó a Força {i+1} é aplicada?: ", str)]
 
-    temp_f = float(input(f"Intensidade da Força {i+1} [N]: "))
+    temp_f = entra(f"Intensidade da Força {i+1} [N]: ", float)
     f.insert(local,temp_f)
 
-    angulo = float(input(f"Ângulo da Força {i+1} em relação ao eixo X [°]: "))
+    angulo = entra(f"Ângulo da Força {i+1} em relação ao eixo X [°]: ", float)
 
     if angulo == 90:
         fy.insert(local,temp_f)
