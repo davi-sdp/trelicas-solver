@@ -8,6 +8,8 @@ rx, ry = [], []
 fx, fy = [], []
 f_res = []
 apoios = {}
+barras = []
+usando_teste = False
 
 def inicializar_vetores(n):
     for _ in range(n):
@@ -16,7 +18,6 @@ def inicializar_vetores(n):
         rx.append(0.0)
         ry.append(0.0)
 
-usando_teste = False
 test = entra("Deseja usar um caso de teste? (s/n): ", str).lower()
 if test == 's':
     print("\nCasos de Teste Disponíveis:")
@@ -77,8 +78,13 @@ print(f"Coordenadas Y: {coords_y}\n")
 if not usando_teste:
     for i in range(0,n_forcas):
         nos_disponiveis = ", ".join(list(alfabeto.keys())[:len(coords_x)])
-        no_input = entra(f"Em qual nó a Força {i+1} é aplicada? Disponíveis ({nos_disponiveis}): ", str).upper()
-        local = alfabeto[no_input]
+        while True:
+            no_input = entra(f"Em qual nó a Força {i+1} é aplicada? Disponíveis ({nos_disponiveis}): ", str).upper()
+            if no_input in alfabeto and alfabeto[no_input] < n_nos:
+                local = alfabeto[no_input]
+                break
+            print(f"Erro: Nó '{no_input}' inválido. Escolha entre: {nos_disponiveis}")
+
         temp_f = entra(f"Intensidade da Força {i+1} [N]: ", float)
         f_res.append(temp_f)
         angulo = entra(f"Ângulo da Força {i+1} em relação ao eixo X [°]: ", float)
@@ -92,13 +98,21 @@ if not usando_teste:
 # --- ENTRADA DE BARRAS (ELEMENTOS) ---
 if not usando_teste:
     n_barras = entra("Quantas barras existem no esquema?: ", int)
-    barras = [] # Lista de tuplas (índice_nó1, índice_nó2)
 
 for i in range(n_barras):
     if not usando_teste:
+        nos_disponiveis = ", ".join(list(alfabeto.keys())[:len(coords_x)])
         print(f"Definindo Barra {i+1}:")
-        n1 = alfabeto[entra("  Nó de origem: ", str).upper()]
-        n2 = alfabeto[entra("  Nó de destino: ", str).upper()]
+        while True:
+            origem = entra("  Nó de origem: ", str).upper()
+            destino = entra("  Nó de destino: ", str).upper()
+            if (origem in alfabeto and alfabeto[origem] < n_nos and 
+                destino in alfabeto and alfabeto[destino] < n_nos):
+                n1, n2 = alfabeto[origem], alfabeto[destino]
+                if n1 != n2: break
+                print("Erro: O nó de origem não pode ser igual ao de destino.")
+            else:
+                print(f"Erro: Use apenas letras correspondentes aos nós criados: {nos_disponiveis}")
         barras.append((n1, n2))
     else:
         n1, n2 = barras[i]
@@ -125,8 +139,15 @@ for i in range(n_barras):
 if not usando_teste:
     print("\n--- Configuração de Apoios ---")
     n_apoios = entra("Quantos nós possuem apoios?: ", int)
+    nos_disponiveis = ", ".join(list(alfabeto.keys())[:len(coords_x)])
     for _ in range(n_apoios):
-        no_idx = alfabeto[entra("Letra do nó com apoio: ", str).upper()]
+        while True:
+            no_input = entra("Letra do nó com apoio: ", str).upper()
+            if no_input in alfabeto and alfabeto[no_input] < n_nos:
+                no_idx = alfabeto[no_input]
+                break
+            print(f"Erro: Nó '{no_input}' inválido. Disponíveis: {nos_disponiveis}")
+            
         tipo = entra("Tipo de apoio (1-Fixo/Pino, 2-Móvel/Rolete): ", int)
         apoios[no_idx] = tipo
 
@@ -211,7 +232,7 @@ for i in range(n_nos):
     plt.text(coords_x[i], coords_y[i], f" {letra}", fontsize=12, verticalalignment='bottom', horizontalalignment='right')
     plt.plot(coords_x[i], coords_y[i], 'ko', markersize=5)  # Nó como ponto preto
 
-if caso['chao']:
+if usando_teste and caso.get('chao'):
     plt.axhline(0, color='gray', linestyle='--', linewidth=1)
 
 plt.grid(True)
