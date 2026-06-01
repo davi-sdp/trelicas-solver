@@ -9,7 +9,7 @@ def entra(texto, tipo=str):
                 continue
             return valor
         except ValueError:
-            print(f"Digite um valor válido do tipo {tipo.__name__}")
+            print(f"Digite um valor válido do tipo {tipo.__name__}\n")
 
 def verificar_intersecao(p1, p2, p3, p4):
     """
