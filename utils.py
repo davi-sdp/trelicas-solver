@@ -1,3 +1,6 @@
+import math
+import sympy
+
 alfabeto = {chr(65 + i): i for i in range(26)} # gera o dicionario com as letras e os index delas
 
 def entra(texto, tipo=str):
@@ -34,3 +37,40 @@ def obter_equacao_reta(p1, p2):
     m = (y2 - y1) / (x2 - x1)
     c = y1 - m * x1
     return m, c
+
+def calcular_momentos(fx, fy, coords_x, coords_y, momentos=None):
+    """
+    Calcula o momento resultante em cada nó causado pelas forças externas.
+    O momento no nó 'j' é a soma dos momentos de todas as forças 'i' em relação a 'j'.
+    M = r_x * F_y - r_y * F_x
+    Suporta cálculos numéricos e simbólicos (sympy).
+    """
+    n_nos = len(coords_x)
+    if momentos is None or len(momentos) != n_nos:
+        momentos = [0.0] * n_nos
+
+    for j in range(n_nos):
+        soma_m = 0.0
+        for i in range(len(fx)):
+            dx = coords_x[i] - coords_x[j] #ditancia em x
+            dy = coords_y[i] - coords_y[j] #distancia em y
+            soma_m += (dx * fy[i]) - (dy * fx[i]) #formula do momento
+        try:
+            # arredondando em calculos numerocos
+            momentos[j] = round(float(soma_m), 10)
+        except (TypeError, ValueError):
+            # se for simbolico, mantem a expressão e nao arredonda
+            momentos[j] = soma_m
+    return momentos
+
+def n_resolver(formula):
+    # exemplo de formula: "n*(n-1)/2 - n + 1 = 0"
+    """Resolve a fórmula simbólica para n usando sympy."""
+    n_sym = sympy.symbols('n')
+    resultado = sympy.solve(formula, n_sym)
+    if resultado:
+        return resultado[0].evalf() # Retorna o valor numérico de n
+    else:
+        raise ValueError("Não foi possível resolver a fórmula para n.")
+    
+    return None
