@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Treliça Solver</title>
+    <meta
+      name="description"
+      content="Calcule as forças de apoio e forças internas de treliças durante seu curso de Mecanica dos Sólidos"
+    />
+    <link rel="stylesheet" href="./main.css" />
+  </head>
+
+  <body>
+    <div id="header">
+      <h1>Treliça Solver</h1>
+      <h2>Calculadora Web de Treliças</h2>
+    </div>
+    <main>
+      <p>
+        Bem-vindo ao Treliça Solver, a ferramenta definitiva para calcular as
+        forças de apoio e forças internas em treliças. Este aplicativo é
+        projetado para estudantes de Mecanica dos Sólidos que desejam uma
+        maneira fácil e eficiente de resolver problemas relacionados a treliças.
+      </p>
+      <p>
+        Com o Treliça Solver, você pode inserir os dados de entrada, como as
+        forças de apoio e as forças internas, e obter resultados precisos para
+        suas análises estruturais. Nossa interface intuitiva torna o processo de
+        cálculo simples e acessível, permitindo que você se concentre no
+        aprendizado e na compreensão dos conceitos fundamentais das treliças.
+      </p>
+    <h2>Dados de Entrada</h2>
+    <h3>Nós</h3>
+    <div class="forcas">
+      <label for="CHNO">
+        Escolhe um nó:
+        <select id="CHNO" name="no">
+          <option value="">-- Selecione --</option>
+          <option value="NA">Nó A</option>
+          <option value="NB">Nó B</option>
+        </select>
+      </label>
+      <label>
+        Qual é posição?
+        <div class="posicao">
+          <input type="number" name="posicaox" placeholder="Eixo X" />
+          <input type="number" name="posicaoy" placeholder="Eixo Y" />
+        </div>
+      </label>
+      <label>
+        Adicionar Nó:
+        <div class="posicao">
+          <button id="ADNO" type="button">Confirmar</button>
+        </div>
+      </label>
+    </div>
+
+    <h3>Forças de Apoio</h3>
+    <div class="forcas">
+      <label for="CHAP">
+        Qual é o tipo de apoio?:
+        <select id="CHAP" name="apoio">
+          <option value="">-- Selecione --</option>
+          <option value="APA">Pino</option>
+          <option value="APB">Rolete</option>
+        </select>
+      </label>
+      <label for="CHNO">
+        Em qual nó?:
+        <select id="CHNO" name="no">
+          <option value="">-- Selecione --</option>
+          <option value="NA">Nó A</option>
+          <option value="NB">Nó B</option>
+        </select>
+      </label>
+    </div>
+    <div class="forcas">
+      <label>
+        Em qual eixo?
+        <select id="eixo" name="eixo" > <!-- Desabilitado quando for pino, e habiltado quando for rolete -->  
+          <option value="">-- Selecione --</option>
+          <option value="x">Eixo X</option>
+          <option value="y">Eixo Y</option>
+        </select>
+      </label>
+    </div>
+
+    <h3>Forças Externas</h3>
+    <div class="forcas">
+      <label>
+        Força Externa:
+        <div class="posicao">
+          <input type="number" name="forcaexterna" placeholder="Valor da Força" />
+          <input type="number" name="anguloforca" placeholder="Ângulo (graus)" />
+        </div>
+      </label>
+      <label for="CHNO">
+        Em qual nó?:
+        <select id="CHNO" name="no">
+          <option value="">-- Selecione --</option>
+          <option value="NA">Nó A</option>
+          <option value="NB">Nó B</option>
+        </select>
+      </label>
+    </div>
+
+    <h2>Resultados</h2>
+
+    <h2>Resumo</h2>
+    <div id="resumo"></div>
+    </main>
+  </body>
+</html>
