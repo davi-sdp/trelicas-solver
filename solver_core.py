@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from utils import alfabeto, calcular_momentos
+from utils import calcular_momentos
 
 def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     """
@@ -54,12 +54,8 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
 
         # ΣM em torno do apoio fixo = 0  →  resolve Ry do móvel
         # Calcula momentos de todas as forças externas em relação ao nó fixo
-        momentos_externos_em_fixo = 0.0
-        for i in range(n_nos):
-            # Apenas forças externas, não reações ainda
-            dx = coords_x[i] - coords_x[nf]
-            dy = coords_y[i] - coords_y[nf]
-            momentos_externos_em_fixo += (dx * fy[i]) - (dy * fx[i])
+        todos_momentos = calcular_momentos(fx, fy, coords_x, coords_y)
+        momentos_externos_em_fixo = todos_momentos[nf]
 
         # Braço do apoio móvel em relação ao fixo (apenas componente x, pois Ry_movel é vertical)
         dx_movel = coords_x[nm] - coords_x[nf]
