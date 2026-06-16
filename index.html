@@ -7,14 +7,15 @@
       name="description"
       content="Calcule as forças de apoio e forças internas de treliças durante seu curso de Mecanica dos Sólidos"
     />
-    <link rel="stylesheet" href="./main.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="./static/main.css" />
   </head>
 
   <body>
-    <div id="header">
+    <header class="header">
       <h1>Treliça Solver</h1>
       <h2>Calculadora Web de Treliças</h2>
-    </div>
+    </header>
     <main>
       <p>
         Bem-vindo ao Treliça Solver, a ferramenta definitiva para calcular as
@@ -22,92 +23,284 @@
         projetado para estudantes de Mecanica dos Sólidos que desejam uma
         maneira fácil e eficiente de resolver problemas relacionados a treliças.
       </p>
-      <p>
-        Com o Treliça Solver, você pode inserir os dados de entrada, como as
-        forças de apoio e as forças internas, e obter resultados precisos para
-        suas análises estruturais. Nossa interface intuitiva torna o processo de
-        cálculo simples e acessível, permitindo que você se concentre no
-        aprendizado e na compreensão dos conceitos fundamentais das treliças.
-      </p>
     <h2>Dados de Entrada</h2>
     <h3>Nós</h3>
-    <div class="forcas">
-      <label for="CHNO">
-        Escolhe um nó:
-        <select id="CHNO" name="no">
-          <option value="">-- Selecione --</option>
-          <option value="NA">Nó A</option>
-          <option value="NB">Nó B</option>
-        </select>
-      </label>
-      <label>
-        Qual é posição?
-        <div class="posicao">
-          <input type="number" name="posicaox" placeholder="Eixo X" />
-          <input type="number" name="posicaoy" placeholder="Eixo Y" />
-        </div>
-      </label>
-      <label>
-        Adicionar Nó:
-        <div class="posicao">
-          <button id="ADNO" type="button">Confirmar</button>
-        </div>
-      </label>
+    <form id="node-form">
+      <div class="forcas">
+        <label>
+          Coordenada X:
+          <input type="number" id="node-x" placeholder="Eixo X" required />
+        </label>
+        <label>
+          Coordenada Y:
+          <input type="number" id="node-y" placeholder="Eixo Y" required />
+        </label>
+        <button type="submit" class="button">Adicionar Nó</button>
+      </div>
+    </form>
+    <div id="nodes-list">
+      <h4>Nós Adicionados:</h4>
+      <ul id="nodes-ul"></ul>
     </div>
 
-    <h3>Forças de Apoio</h3>
-    <div class="forcas">
-      <label for="CHAP">
-        Qual é o tipo de apoio?:
-        <select id="CHAP" name="apoio">
-          <option value="">-- Selecione --</option>
-          <option value="APA">Pino</option>
-          <option value="APB">Rolete</option>
-        </select>
-      </label>
-      <label for="CHNO">
-        Em qual nó?:
-        <select id="CHNO" name="no">
-          <option value="">-- Selecione --</option>
-          <option value="NA">Nó A</option>
-          <option value="NB">Nó B</option>
-        </select>
-      </label>
-    </div>
-    <div class="forcas">
-      <label>
-        Em qual eixo?
-        <select id="eixo" name="eixo" > <!-- Desabilitado quando for pino, e habiltado quando for rolete -->  
-          <option value="">-- Selecione --</option>
-          <option value="x">Eixo X</option>
-          <option value="y">Eixo Y</option>
-        </select>
-      </label>
+    <h3>Barras</h3>
+    <form id="bar-form">
+      <div class="forcas">
+        <label for="bar-start-node">
+          Nó de Origem:
+          <select id="bar-start-node" required>
+            <option value="">-- Selecione --</option>
+          </select>
+        </label>
+        <label for="bar-end-node">
+          Nó de Destino:
+          <select id="bar-end-node" required>
+            <option value="">-- Selecione --</option>
+          </select>
+        </label>
+        <button type="submit" class="button">Adicionar Barra</button>
+      </div>
+    </form>
+    <div id="bars-list">
+      <h4>Barras Adicionadas:</h4>
+      <ul id="bars-ul"></ul>
     </div>
 
     <h3>Forças Externas</h3>
-    <div class="forcas">
-      <label>
-        Força Externa:
-        <div class="posicao">
-          <input type="number" name="forcaexterna" placeholder="Valor da Força" />
-          <input type="number" name="anguloforca" placeholder="Ângulo (graus)" />
-        </div>
-      </label>
-      <label for="CHNO">
-        Em qual nó?:
-        <select id="CHNO" name="no">
-          <option value="">-- Selecione --</option>
-          <option value="NA">Nó A</option>
-          <option value="NB">Nó B</option>
-        </select>
-      </label>
+    <form id="force-form">
+      <div class="forcas">
+        <label>
+          Intensidade da Força [N]:
+          <input type="number" id="force-magnitude" placeholder="Valor da Força" required />
+        </label>
+        <label>
+          Ângulo [°]:
+          <input type="number" id="force-angle" placeholder="Ângulo (graus)" required />
+        </label>
+        <label for="force-node">
+          Nó de Aplicação:
+          <select id="force-node" required>
+            <option value="">-- Selecione --</option>
+          </select>
+        </label>
+        <button type="submit" class="button">Adicionar Força</button>
+      </div>
+    </form>
+    <div id="forces-list">
+      <h4>Forças Adicionadas:</h4>
+      <ul id="forces-ul"></ul>
     </div>
 
-    <h2>Resultados</h2>
+    <h3>Apoios</h3>
+    <form id="support-form">
+      <div class="forcas">
+        <label for="support-node">
+          Nó com Apoio:
+          <select id="support-node" required>
+            <option value="">-- Selecione --</option>
+          </select>
+        </label>
+        <label for="support-type">
+          Tipo de Apoio:
+          <select id="support-type" required>
+            <option value="">-- Selecione --</option>
+            <option value="1">Fixo (Pino)</option>
+            <option value="2">Móvel (Rolete)</option>
+          </select>
+        </label>
+        <button type="submit" class="button">Adicionar Apoio</button>
+      </div>
+    </form>
+    <div id="supports-list">
+      <h4>Apoios Adicionados:</h4>
+      <ul id="supports-ul"></ul>
+    </div>
 
-    <h2>Resumo</h2>
-    <div id="resumo"></div>
+    <button id="calculate-button" class="button" style="margin-top: 30px;">Calcular Treliça</button>
+
+    <h2 style="margin-top: 50px;">Resultados</h2>
+    <div id="results-section">
+      <h3>Reações nos Apoios</h3>
+      <div id="reactions-output">
+        <p>Nenhuma reação calculada ainda.</p>
+      </div>
+
+      <h3>Diagrama da Treliça</h3>
+      <div id="truss-diagram">
+        <img id="diagram-image" src="" alt="Diagrama da Treliça" style="max-width: 100%; height: auto; display: none;">
+      </div>
+    </div>
     </main>
+
+    <script>
+      const nodes = [];
+      const bars = [];
+      const forces = [];
+      const supports = {}; // {node_index: type}
+      let nextNodeLetter = 'A';
+
+      const nodeForm = document.getElementById('node-form');
+      const nodeXInput = document.getElementById('node-x');
+      const nodeYInput = document.getElementById('node-y');
+      const nodesUl = document.getElementById('nodes-ul');
+
+      const barForm = document.getElementById('bar-form');
+      const barStartNodeSelect = document.getElementById('bar-start-node');
+      const barEndNodeSelect = document.getElementById('bar-end-node');
+      const barsUl = document.getElementById('bars-ul');
+
+      const forceForm = document.getElementById('force-form');
+      const forceMagnitudeInput = document.getElementById('force-magnitude');
+      const forceAngleInput = document.getElementById('force-angle');
+      const forceNodeSelect = document.getElementById('force-node');
+      const forcesUl = document.getElementById('forces-ul');
+
+      const supportForm = document.getElementById('support-form');
+      const supportNodeSelect = document.getElementById('support-node');
+      const supportTypeSelect = document.getElementById('support-type');
+      const supportsUl = document.getElementById('supports-ul');
+
+      const calculateButton = document.getElementById('calculate-button');
+      const reactionsOutput = document.getElementById('reactions-output');
+      const diagramImage = document.getElementById('diagram-image');
+
+      function updateNodeSelects() {
+        const selects = [barStartNodeSelect, barEndNodeSelect, forceNodeSelect, supportNodeSelect];
+        selects.forEach(select => {
+          select.innerHTML = '<option value="">-- Selecione --</option>';
+          nodes.forEach((node, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `Nó ${String.fromCharCode(65 + index)} (${node.x}, ${node.y})`;
+            select.appendChild(option);
+          });
+        });
+      }
+
+      nodeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const x = parseFloat(nodeXInput.value);
+        const y = parseFloat(nodeYInput.value);
+        nodes.push({ x, y });
+        const li = document.createElement('li');
+        li.textContent = `Nó ${nextNodeLetter}: (${x}, ${y})`;
+        nodesUl.appendChild(li);
+        nextNodeLetter = String.fromCharCode(nextNodeLetter.charCodeAt(0) + 1);
+        nodeXInput.value = '';
+        nodeYInput.value = '';
+        updateNodeSelects();
+      });
+
+      barForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const startNodeIdx = parseInt(barStartNodeSelect.value);
+        const endNodeIdx = parseInt(barEndNodeSelect.value);
+
+        if (startNodeIdx === endNodeIdx) {
+          alert("Nó de origem não pode ser igual ao de destino.");
+          return;
+        }
+
+        bars.push([startNodeIdx, endNodeIdx]);
+        const li = document.createElement('li');
+        li.textContent = `Barra: Nó ${String.fromCharCode(65 + startNodeIdx)} - Nó ${String.fromCharCode(65 + endNodeIdx)}`;
+        barsUl.appendChild(li);
+        barStartNodeSelect.value = '';
+        barEndNodeSelect.value = '';
+      });
+
+      forceForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const magnitude = parseFloat(forceMagnitudeInput.value);
+        const angle = parseFloat(forceAngleInput.value);
+        const nodeIdx = parseInt(forceNodeSelect.value);
+        forces.push({ magnitude, angle, node: nodeIdx });
+        const li = document.createElement('li');
+        li.textContent = `Força: ${magnitude} N a ${angle}° no Nó ${String.fromCharCode(65 + nodeIdx)}`;
+        forcesUl.appendChild(li);
+        forceMagnitudeInput.value = '';
+        forceAngleInput.value = '';
+        forceNodeSelect.value = '';
+      });
+
+      supportForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const nodeIdx = parseInt(supportNodeSelect.value);
+        const type = parseInt(supportTypeSelect.value);
+        supports[nodeIdx] = type;
+        const li = document.createElement('li');
+        li.textContent = `Apoio: Nó ${String.fromCharCode(65 + nodeIdx)} - ${type === 1 ? 'Fixo (Pino)' : 'Móvel (Rolete)'}`;
+        supportsUl.appendChild(li);
+        supportNodeSelect.value = '';
+        supportTypeSelect.value = '';
+      });
+
+      calculateButton.addEventListener('click', async () => {
+        if (nodes.length === 0) {
+          alert("Por favor, adicione pelo menos um nó.");
+          return;
+        }
+        if (Object.keys(supports).length === 0) {
+          alert("Por favor, adicione pelo menos um apoio.");
+          return;
+        }
+
+        const payload = {
+          nodes: nodes,
+          bars: bars,
+          forces: forces,
+          supports: supports
+        };
+
+        try {
+          const response = await fetch('/solve', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Erro ao calcular a treliça.');
+          }
+
+          const data = await response.json();
+          console.log(data);
+
+          // Display reactions
+          let reactionsHtml = '<ul>';
+          if (data.reactions && Object.keys(data.reactions).length > 0) {
+            for (const nodeIdx in data.reactions) {
+              const nodeLetter = String.fromCharCode(65 + parseInt(nodeIdx));
+              const reaction = data.reactions[nodeIdx];
+              reactionsHtml += `<li>Nó ${nodeLetter}: `;
+              if (reaction.Rx !== undefined) reactionsHtml += `Rx = ${reaction.Rx.toFixed(3)} N `;
+              if (reaction.Ry !== undefined) reactionsHtml += `Ry = ${reaction.Ry.toFixed(3)} N`;
+              reactionsHtml += `</li>`;
+            }
+            reactionsHtml += `<li>Verificação: ΣFx = ${data.equilibrium_fx.toFixed(3)} N | ΣFy = ${data.equilibrium_fy.toFixed(3)} N [${data.equilibrium_ok ? '✓' : '✗ PROBLEMA!'}]</li>`;
+          } else {
+            reactionsHtml += '<li>Nenhuma reação calculada. ' + (data.message || '') + '</li>';
+          }
+          reactionsHtml += '</ul>';
+          reactionsOutput.innerHTML = reactionsHtml;
+
+          // Display diagram
+          if (data.diagram_image) {
+            diagramImage.src = `data:image/png;base64,${data.diagram_image}`;
+            diagramImage.style.display = 'block';
+          } else {
+            diagramImage.style.display = 'none';
+          }
+
+        } catch (error) {
+          console.error('Erro:', error);
+          reactionsOutput.innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
+          diagramImage.style.display = 'none';
+        }
+      });
+    </script>
   </body>
 </html>
