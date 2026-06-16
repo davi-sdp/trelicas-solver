@@ -57,7 +57,7 @@ def calcular_momentos(fx, fy, coords_x, coords_y, momentos=None):
             soma_m += (dx * fy[i]) - (dy * fx[i]) #formula do momento
         try:
             # arredondando em calculos numerocos
-            momentos[j] = round(float(soma_m), 10)
+            momentos[j] = round(float(soma_m), 6)
         except (TypeError, ValueError):
             # se for simbolico, mantem a expressão e nao arredonda
             momentos[j] = soma_m

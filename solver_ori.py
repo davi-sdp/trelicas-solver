@@ -167,7 +167,7 @@ if len(apoios_fixos) == 1 and len(apoios_moveis) == 1:
     soma_fx = sum(fx)
     soma_fy = sum(fy)
 
-    # ΣM em torno do apoio fixo = 0  →  resolve Ry do móvel
+    # ΣM em torno do apoio fixo = 0 -> resolve Ry do móvel
     # M = dx * Fy - dy * Fx  (braço do ponto de aplicação até o apoio fixo)
     m_preliminar = calcular_momentos(fx, fy, coords_x, coords_y)
     momento_externo_em_fixo = m_preliminar[nf]
@@ -185,10 +185,10 @@ if len(apoios_fixos) == 1 and len(apoios_moveis) == 1:
     else:
         ry[nm] = round(-momento_externo_em_fixo / dx_movel, 6)
 
-        # ΣFy = 0  →  Ry_fixo = -ΣFy - Ry_movel
+        # ΣFy = 0 -> Ry_fixo = -ΣFy - Ry_movel
         ry[nf] = round(-soma_fy - ry[nm], 6)
 
-        # ΣFx = 0  →  Rx_fixo = -ΣFx
+        # ΣFx = 0 -> Rx_fixo = -ΣFx
         rx[nf] = round(-soma_fx, 6)
 
         print("\n--- Reações nos Apoios ---")
@@ -205,7 +205,7 @@ if len(apoios_fixos) == 1 and len(apoios_moveis) == 1:
         m_ext_no_movel = calcular_momentos(fx, fy, coords_x, coords_y)[nm]
         eq_m = round(m_ext_no_movel + m_reac_no_movel, 6)
 
-        ok = "✓" if eq_fx == 0 and eq_fy == 0 and eq_m == 0 else "✗ PROBLEMA!"
+        ok = "OK" if eq_fx == 0 and eq_fy == 0 and eq_m == 0 else "✗ PROBLEMA!"
         print(f"\n  Verificação de Equilíbrio:")
         print(f"    ΣFx = {eq_fx} N | ΣFy = {eq_fy} N | ΣM_móvel = {eq_m} N.m  [{ok}]")
 

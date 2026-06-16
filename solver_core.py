@@ -17,6 +17,10 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
               'message' (se houver avisos/erros), e os vetores de forças e reações.
     """
     n_nos = len(nodes_data)
+    
+    # Precisão padrão para arredondamentos
+    PRECISAO = 6
+
     coords_x = [node['x'] for node in nodes_data]
     coords_y = [node['y'] for node in nodes_data]
 
@@ -26,14 +30,15 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     rx = [0.0] * n_nos
     ry = [0.0] * n_nos
     f_res = [] # Intensidade das forças externas
+    bar_forces = []
 
-    # Aplica forças externas
+    # Processa e decompõe as forças externas aplicadas nos nós
     for force in forces_data:
         idx = force['node']
         magnitude = force['magnitude']
         angle_rad = math.radians(force['angle'])
-        fx[idx] += round(math.cos(angle_rad) * magnitude, 10)
-        fy[idx] += round(math.sin(angle_rad) * magnitude, 10)
+        fx[idx] += round(math.cos(angle_rad) * magnitude, PRECISAO)
+        fy[idx] += round(math.sin(angle_rad) * magnitude, PRECISAO)
         f_res.append(magnitude)
 
     apoios_fixos = [n for n, t in supports_data.items() if t == 1]
@@ -52,12 +57,12 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
         soma_fx = sum(fx)
         soma_fy = sum(fy)
 
-        # ΣM em torno do apoio fixo = 0  →  resolve Ry do móvel
-        # Calcula momentos de todas as forças externas em relação ao nó fixo
+        # ΣM em torno do apoio fixo = 0 -> resolve Ry do móvel
+        # O momento resultante das forças externas em relação ao apoio fixo deve ser equilibrado pela reação do apoio móvel
         todos_momentos = calcular_momentos(fx, fy, coords_x, coords_y)
         momentos_externos_em_fixo = todos_momentos[nf]
 
-        # Braço do apoio móvel em relação ao fixo (apenas componente x, pois Ry_movel é vertical)
+        # Braço de alavanca: distância horizontal entre o apoio móvel e o fixo
         dx_movel = coords_x[nm] - coords_x[nf]
         # dy_movel = coords_y[nm] - coords_y[nf] # Não usado para Ry vertical
 
@@ -65,21 +70,60 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
             message = "ERRO: Os dois apoios estão alinhados verticalmente. Estrutura instável para cargas verticais."
             equilibrium_ok = False
         else:
-            ry[nm] = round(-momentos_externos_em_fixo / dx_movel, 6)
+            # Calcula a reação vertical no apoio móvel (Ry_movel * dx = -Momento_externo)
+            ry[nm] = round(-momentos_externos_em_fixo / dx_movel, PRECISAO)
 
-            # ΣFy = 0  →  Ry_fixo = -ΣFy - Ry_movel
-            ry[nf] = round(-soma_fy - ry[nm], 6)
+            # ΣFy = 0 -> Ry_fixo = -ΣFy - Ry_movel
+            ry[nf] = round(-soma_fy - ry[nm], PRECISAO)
 
-            # ΣFx = 0  →  Rx_fixo = -ΣFx
-            rx[nf] = round(-soma_fx, 6)
+            # ΣFx = 0 -> Rx_fixo = -ΣFx
+            rx[nf] = round(-soma_fx, PRECISAO)
 
             reactions_output[nf] = {'Rx': rx[nf], 'Ry': ry[nf]}
             reactions_output[nm] = {'Ry': ry[nm]}
 
-            # Verificação de equilíbrio
-            equilibrium_fx = round(soma_fx + rx[nf], 6)
-            equilibrium_fy = round(soma_fy + ry[nf] + ry[nm], 6)
+            # Verificação de segurança: a soma das forças totais deve ser zero
+            equilibrium_fx = round(soma_fx + rx[nf], PRECISAO)
+            equilibrium_fy = round(soma_fy + ry[nf] + ry[nm], PRECISAO)
             equilibrium_ok = (equilibrium_fx == 0 and equilibrium_fy == 0)
+
+            # CÁLCULO DE ESFORÇOS INTERNOS (Método Matricial dos Nós)
+            # Resolve o sistema [A]{f} = {b} onde 'f' são os esforços nas barras
+            if equilibrium_ok:
+                num_bars = len(bars_data)
+                # Matriz de Equilíbrio A: cada nó contribui com duas linhas (Equilíbrio X e Y)
+                # Colunas representam as incógnitas (forças em cada barra)
+                A_mat = np.zeros((2 * n_nos, num_bars))
+                # Vetor de Carga b: forças conhecidas (externas + reações) que devem ser equilibradas pelas barras
+                b_vec = np.zeros(2 * n_nos)
+                
+                for i, (n1, n2) in enumerate(bars_data):
+                    # Calcula o comprimento e os cossenos diretores da barra
+                    dx, dy = coords_x[n2] - coords_x[n1], coords_y[n2] - coords_y[n1]
+                    L = math.sqrt(dx**2 + dy**2)
+                    ux, uy = dx/L, dy/L # Vetor unitário na direção da barra
+                    
+                    # A força da barra 'i' atua nos nós n1 e n2 com direções opostas
+                    # No nó de origem (n1):
+                    A_mat[2*n1, i], A_mat[2*n1+1, i] = ux, uy
+                    # No nó de destino (n2):
+                    A_mat[2*n2, i], A_mat[2*n2+1, i] = -ux, -uy
+                
+                for i in range(n_nos):
+                    # O sistema resolve A*f + (Cargas+Reações) = 0, logo A*f = -(Cargas+Reações)
+                    b_vec[2*i], b_vec[2*i+1] = -(fx[i] + rx[i]), -(fy[i] + ry[i])
+                
+                try:
+                    # Resolvemos usando Mínimos Quadrados (lstsq) para maior robustez numérica
+                    # sol contém os valores das forças nas barras
+                    sol, _, _, _ = np.linalg.lstsq(A_mat, b_vec, rcond=None)
+                    for val in sol:
+                        val = round(float(val), PRECISAO)
+                        # Se a força é positiva, a barra está sob tração (puxando o nó)
+                        t = "Tração" if val > 1e-6 else ("Compressão" if val < -1e-6 else "Nula")
+                        bar_forces.append({'f': abs(val), 'type': t})
+                except:
+                    pass
 
     elif len(apoios_fixos) == 0:
         message = "AVISO: Nenhum apoio fixo definido. Reações não calculadas."
@@ -101,5 +145,6 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
         'coords_x': coords_x,
         'coords_y': coords_y,
         'f_res': f_res,
-        'apoios': supports_data
+        'apoios': supports_data,
+        'bar_forces': bar_forces
     }

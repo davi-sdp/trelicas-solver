@@ -10,6 +10,32 @@ Um aplicativo web para calcular as reações de apoio em treliças isostáticas 
 - **Visualização Gráfica**: Gera um diagrama vetorial da treliça, mostrando nós, barras, forças aplicadas e reações calculadas.
 - **Detecção de Instabilidade**: Alerta sobre configurações de apoio que podem levar à instabilidade.
 
+## Fundamentos Teóricos
+
+O Treliça Solver utiliza princípios fundamentais da Mecânica Estática:
+
+1.  **Reações de Apoio**: São calculadas utilizando as três equações de equilíbrio para um corpo rígido no plano:
+    *   $\sum F_x = 0$ (Soma das forças horizontais)
+    *   $\sum F_y = 0$ (Soma das forças verticais)
+    *   $\sum M_z = 0$ (Soma dos momentos em relação a um ponto, geralmente o apoio fixo)
+
+2.  **Esforços Internos (Método dos Nós via Abordagem Matricial)**: 
+    Para determinar a força em cada barra, o nosso sistema resolve o equilíbrio de translação em cada nó simultaneamente.
+    *   **Formulação**: O problema é montado na forma de um sistema linear $[A]\{f\} = \{b\}$.
+        *   $[A]$ (**Matriz de Coeficientes**): Contém os componentes geométricos (cossenos diretores $cos \theta$ e $sen \theta$) de cada barra em relação aos nós.
+        *   $\{f\}$ (**Vetor de Incógnitas**): Representa os esforços internos em cada barra.
+        *   $\{b\}$ (**Vetor de Cargas**): Contém as forças externas e reações de apoio aplicadas.
+    *   **Resolução**: Utilizamos o método de **Mínimos Quadrados Lineares** (`numpy.linalg.lstsq`). Essa escolha permite que o solver lide com sistemas determinados e fornece uma solução estável mesmo se houver pequenas redundâncias numéricas.
+
+3.  **Convenção de Sinais**:
+    *   Resultados **positivos** indicam **Tração** (a barra está sendo "esticada").
+    *   Resultados **negativos** indicam **Compressão** (a barra está sendo "esmagada").
+
+## Precisão dos Cálculos
+
+Por padrão, o nosso nosso sistema utiliza uma precisão de **6 casas decimais** para todos os arredondamentos e verificações de equilíbrio. Este valor foi escolhido para equilibrar a legibilidade dos resultados com a precisão necessária para engenharia. 
+*   **Nota**: Essa precisão pode ser modificada diretamente nas funções de arredondamento dentro do arquivo `solver_core.py`.
+
 ## Tecnologias Utilizadas
 
 - **Backend**:

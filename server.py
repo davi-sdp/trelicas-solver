@@ -65,7 +65,8 @@ async def solve_truss(data: TrussData):
             solver_results['rx'],
             solver_results['ry'],
             solver_results['apoios'],
-            solver_results['f_res']
+            solver_results['f_res'],
+            bar_forces=solver_results['bar_forces']
         )
 
         return {
@@ -74,7 +75,8 @@ async def solve_truss(data: TrussData):
             "equilibrium_fy": solver_results['equilibrium_fy'],
             "equilibrium_ok": solver_results['equilibrium_ok'],
             "message": solver_results['message'],
-            "diagram_image": diagram_base64
+            "diagram_image": diagram_base64,
+            "bar_forces": solver_results['bar_forces']
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -24,6 +24,7 @@ body {
   font-family: "Inter", "Roboto", sans-serif;
   line-height: 1.6;
   color: var(--text);
+  background-color: var(--bg);
 }
 
 main {
@@ -49,11 +50,13 @@ main {
     display: flex;
     gap: 12px;
 }
+
 label {
     display: flex;
     flex-direction: column;
     gap: 8px;
     color: var(--text-muted);
+    width: fit-content; /* Impede que a label estique horizontalmente sem necessidade */
 }
 
 
@@ -134,6 +137,59 @@ button:active,
 
 .table tr:last-child td {
   border-bottom: none;
+}
+
+/* Estilização das Listas de Dados */
+ul[id$="-ul"] {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+ul[id$="-ul"] li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1px solid #dde4f2;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+ul[id$="-ul"] li:hover {
+  border-color: var(--primary);
+  transform: translateX(4px);
+}
+
+/* Botões de Ação Pequenos */
+.actions-btns {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-small {
+  padding: 6px 12px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+  border: 1px solid #dde4f2;
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-small:hover {
+  background: var(--surface-strong);
+  border-color: var(--primary);
+}
+
+.btn-danger:hover {
+  background: #fff1f2;
+  color: #e11d48;
+  border-color: #e11d48;
 }
 
 .footer {
