@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from utils import calcular_momentos
+from utils import calcular_momentos, verificar_intersecao
 
 def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     """
@@ -46,6 +46,19 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
 
     reactions_output = {}
     message = ""
+    
+    # Verificação de cruzamento de barras (Requisito de Projeto)
+    cruzamentos = []
+    for i in range(len(bars_data)):
+        for j in range(i + 1, len(bars_data)):
+            p1, p2 = (coords_x[bars_data[i][0]], coords_y[bars_data[i][0]]), (coords_x[bars_data[i][1]], coords_y[bars_data[i][1]])
+            p3, p4 = (coords_x[bars_data[j][0]], coords_y[bars_data[j][0]]), (coords_x[bars_data[j][1]], coords_y[bars_data[j][1]])
+            if verificar_intersecao(p1, p2, p3, p4):
+                cruzamentos.append(f"Barras {i} e {j}")
+    
+    if cruzamentos:
+        message += "AVISO: As seguintes barras estão se cruzando: " + ", ".join(cruzamentos) + ". "
+
     equilibrium_fx = 0
     equilibrium_fy = 0
     equilibrium_ok = False
