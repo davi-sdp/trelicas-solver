@@ -13,6 +13,10 @@ Um aplicativo web para calcular as reações de apoio em treliças isostáticas 
 - **Visualização Gráfica**: Gera um diagrama vetorial da treliça, mostrando nós, barras, forças aplicadas e reações calculadas.
 - **Detecção de Instabilidade**: Alerta sobre configurações de apoio que podem levar à instabilidade.
 
+## Pesquisa de Mercado
+
+A base estratégica e o entendimento das necessidades dos usuários podem ser consultados na nossa [Pesquisa de Mercado](pesquisa_de_mercado.md).
+
 ## Fundamentos Teóricos
 
 O Treliça Solver utiliza princípios fundamentais da Mecânica Estática:
