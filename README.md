@@ -2,6 +2,9 @@
 
 Um aplicativo web para calcular as reações de apoio em treliças isostáticas simples e visualizar o esquema da treliça com forças e reações. Desenvolvido com FastAPI para o backend e HTML/CSS/JavaScript para o frontend, utilizando Matplotlib para a geração dos diagramas.
 
+![alt text](imgs/screenshot.png)
+> Página inicial do programa
+
 ## Funcionalidades
 
 - **Entrada de Dados Interativa**: Adicione nós, barras, forças externas e apoios através de formulários no navegador.
@@ -94,6 +97,11 @@ Por padrão, o nosso nosso sistema utiliza uma precisão de **6 casas decimais**
 3.  **Adicione Forças Externas**: Especifique a magnitude, o ângulo e o nó de aplicação de cada força.
 4.  **Adicione Apoios**: Defina o tipo de apoio (Fixo/Pino ou Móvel/Rolete) e o nó onde ele está localizado.
 5.  **Calcule**: Clique no botão "Calcular Treliça" para obter as reações de apoio e visualizar o diagrama.
+
+## Exemplos
+
+![alt text](imgs/screenshot2.png)
+> Note que a barra constou com esforço nulo, apesar de não ser matematicamente nulo. Isso deve-se ao fato da precisão usada, que é de 6 casas decimais.
 
 ## Estrutura do Projeto
 
