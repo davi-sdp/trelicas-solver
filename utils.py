@@ -1,7 +1,33 @@
 import math
 import sympy
+import numpy as np
 
 alfabeto = {chr(65 + i): i for i in range(26)} # gera o dicionario com as letras e os index delas
+
+class No:
+    def __init__(self, id, x, y, apoio=None):
+        self.id = id
+        self.x = x
+        self.y = y
+        self.apoio = apoio # 1 para pino/fixo, 2 para rolete/móvel
+
+class Braco:
+    def __init__(self, id, no1, no2):
+        self.id = id
+        self.no1 = no1 # Objeto No
+        self.no2 = no2 # Objeto No
+        self.comprimento = np.hypot(self.no2.x - self.no1.x, self.no2.y - self.no1.y)
+        # Usamos atan2 para evitar divisão por zero em barras verticais
+        self.angulo = np.arctan2(self.no2.y - self.no1.y, self.no2.x - self.no1.x)
+        self.c = np.cos(self.angulo)
+        self.s = np.sin(self.angulo)
+
+class Forca:
+    def __init__(self, id, magnitude, angulo, no_idx):
+        self.id = id
+        self.no_idx = no_idx
+        self.fx = magnitude * np.cos(np.radians(angulo))
+        self.fy = magnitude * np.sin(np.radians(angulo))
 
 def entra(texto, tipo=str):
     """Função utilitária para validar entradas de dados."""

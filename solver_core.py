@@ -1,6 +1,6 @@
 import numpy as np
 import math
-from utils import calcular_momentos, verificar_intersecao
+from utils import calcular_momentos, verificar_intersecao, No, Braco, Forca
 
 def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     """
@@ -49,12 +49,12 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     
     # Verificação de cruzamento de barras (Requisito de Projeto)
     cruzamentos = []
-    for i in range(len(bars_data)):
-        for j in range(i + 1, len(bars_data)):
-            p1, p2 = (coords_x[bars_data[i][0]], coords_y[bars_data[i][0]]), (coords_x[bars_data[i][1]], coords_y[bars_data[i][1]])
-            p3, p4 = (coords_x[bars_data[j][0]], coords_y[bars_data[j][0]]), (coords_x[bars_data[j][1]], coords_y[bars_data[j][1]])
+    for i in range(len(bracos_obj)):
+        for j in range(i + 1, len(bracos_obj)):
+            p1, p2 = (bracos_obj[i].no1.x, bracos_obj[i].no1.y), (bracos_obj[i].no2.x, bracos_obj[i].no2.y)
+            p3, p4 = (bracos_obj[j].no1.x, bracos_obj[j].no1.y), (bracos_obj[j].no2.x, bracos_obj[j].no2.y)
             if verificar_intersecao(p1, p2, p3, p4):
-                cruzamentos.append(f"Barras {i} e {j}")
+                cruzamentos.append(f"Barras {i+1} e {j+1}")
     
     if cruzamentos:
         message += "AVISO: As seguintes barras estão se cruzando: " + ", ".join(cruzamentos) + ". "
