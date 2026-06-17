@@ -21,25 +21,26 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     # Precisão padrão para arredondamentos
     PRECISAO = 6
 
-    coords_x = [node['x'] for node in nodes_data]
-    coords_y = [node['y'] for node in nodes_data]
+    # Instanciação dos objetos (Requisito de POO e organização)
+    nos_obj = [No(i, n['x'], n['y'], supports_data.get(i)) for i, n in enumerate(nodes_data)]
+    bracos_obj = [Braco(i, nos_obj[b[0]], nos_obj[b[1]]) for i, b in enumerate(bars_data)]
+    forcas_obj = [Forca(i, f['magnitude'], f['angle'], f['node']) for i, f in enumerate(forces_data)]
+
+    coords_x = [n.x for n in nos_obj]
+    coords_y = [n.y for n in nos_obj]
 
     # Inicializa vetores de forças e reações
     fx = [0.0] * n_nos
     fy = [0.0] * n_nos
     rx = [0.0] * n_nos
     ry = [0.0] * n_nos
-    f_res = [] # Intensidade das forças externas
+    f_res = [f.magnitude for f in forces_data] # Intensidade das forças externas
     bar_forces = []
 
-    # Processa e decompõe as forças externas aplicadas nos nós
-    for force in forces_data:
-        idx = force['node']
-        magnitude = force['magnitude']
-        angle_rad = math.radians(force['angle'])
-        fx[idx] += round(math.cos(angle_rad) * magnitude, PRECISAO)
-        fy[idx] += round(math.sin(angle_rad) * magnitude, PRECISAO)
-        f_res.append(magnitude)
+    # Processa as forças usando os objetos Forca
+    for f in forcas_obj:
+        fx[f.no_idx] += round(f.fx, PRECISAO)
+        fy[f.no_idx] += round(f.fy, PRECISAO)
 
     apoios_fixos = [n for n, t in supports_data.items() if t == 1]
     apoios_moveis = [n for n, t in supports_data.items() if t == 2]
