@@ -146,9 +146,9 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
 
     return {
         'reactions': reactions_output,
-        'equilibrium_fx': equilibrium_fx,
-        'equilibrium_fy': equilibrium_fy,
-        'equilibrium_ok': equilibrium_ok,
+        'equilibrium_fx': float(equilibrium_fx),
+        'equilibrium_fy': float(equilibrium_fy),
+        'equilibrium_ok': bool(equilibrium_ok),
         'message': message,
         'fx': [float(v) for v in fx],
         'fy': [float(v) for v in fy],
