@@ -1,6 +1,6 @@
 # Treliça Solver
 
-Uma solução web para calcular as reações de apoio em treliças isostáticas simples e visualizar o esquema da treliça com forças e reações. Desenvolvido com FastAPI para o backend e HTML/CSS/JavaScript para o frontend, utilizando Matplotlib para a geração dos diagramas.
+Uma solução web para calcular as reações de apoio em treliças isostáticas simples e visualizar o esquema da treliça com forças e reações. Desenvolvido com FastAPI para o backend e HTML/CSS/JavaScript para o frontend, utilizando Matplotlib para a geração dos diagramas. Feito por alunos da PUCC.
 
 ![alt text](imgs/screenshot.png)
 > Página inicial do programa
