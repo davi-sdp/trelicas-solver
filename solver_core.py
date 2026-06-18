@@ -34,7 +34,7 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
     fy = [0.0] * n_nos
     rx = [0.0] * n_nos
     ry = [0.0] * n_nos
-    f_res = [f.magnitude for f in forces_data] # Intensidade das forças externas
+    f_res = [f['magnitude'] for f in forces_data] # Intensidade das forças externas
     bar_forces = []
 
     # Processa as forças usando os objetos Forca
