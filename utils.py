@@ -2,7 +2,7 @@ import math
 import sympy
 import numpy as np
 
-alfabeto = {chr(65 + i): i for i in range(26)} # gera o dicionario com as letras e os index delas
+alfabeto = {chr(65 + i): i for i in range(26)} # gera o dicionario com as letras e os index delas (A:1,B:2,...)
 
 class No:
     def __init__(self, id, x, y, apoio=None):
@@ -89,6 +89,7 @@ def calcular_momentos(fx, fy, coords_x, coords_y, momentos=None):
             momentos[j] = soma_m
     return momentos
 
+# Até poderíamos usar, mas ficará apenas como função de legado
 def n_resolver(formula):
     # exemplo de formula: "n*(n-1)/2 - n + 1 = 0"
     """Resolve a fórmula simbólica para n usando sympy."""
@@ -96,7 +97,4 @@ def n_resolver(formula):
     resultado = sympy.solve(formula, n_sym)
     if resultado:
         return resultado[0].evalf() # Retorna o valor numérico de n
-    else:
-        raise ValueError("Não foi possível resolver a fórmula para n.")
-    
-    return None
+    raise ValueError("Não foi possível resolver a fórmula para n.")
