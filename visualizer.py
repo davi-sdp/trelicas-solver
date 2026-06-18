@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 import io
@@ -92,7 +94,8 @@ def generate_truss_diagram(coords_x, coords_y, bars, fx, fy, rx, ry, apoios, f_r
     letras = list(alfabeto.keys())
     for i in range(len(coords_x)):
         ax.plot(coords_x[i], coords_y[i], 'ko', markersize=6, zorder=5)
-        ax.text(coords_x[i] + 0.05, coords_y[i] + 0.1, letras[i], fontsize=12, fontweight='bold')
+        label = letras[i] if i < len(letras) else str(i)
+        ax.text(coords_x[i] + 0.05, coords_y[i] + 0.1, label, fontsize=12, fontweight='bold')
 
     ax.grid(True, linestyle=':', alpha=0.6)
     ax.set_title("Esquema da Treliça", fontsize=14)
