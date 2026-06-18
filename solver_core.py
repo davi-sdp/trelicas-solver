@@ -93,8 +93,8 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
             # ΣFx = 0 -> Rx_fixo = -ΣFx
             rx[nf] = round(-soma_fx, PRECISAO)
 
-            reactions_output[nf] = {'Rx': rx[nf], 'Ry': ry[nf]}
-            reactions_output[nm] = {'Ry': ry[nm]}
+            reactions_output[str(nf)] = {'Rx': float(rx[nf]), 'Ry': float(ry[nf])}
+            reactions_output[str(nm)] = {'Ry': float(ry[nm])}
 
             # Verificação de segurança: a soma das forças totais deve ser zero
             equilibrium_fx = round(soma_fx + rx[nf], PRECISAO)
@@ -150,10 +150,10 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
         'equilibrium_fy': equilibrium_fy,
         'equilibrium_ok': equilibrium_ok,
         'message': message,
-        'fx': fx,
-        'fy': fy,
-        'rx': rx,
-        'ry': ry,
+        'fx': [float(v) for v in fx],
+        'fy': [float(v) for v in fy],
+        'rx': [float(v) for v in rx],
+        'ry': [float(v) for v in ry],
         'coords_x': coords_x,
         'coords_y': coords_y,
         'f_res': f_res,
