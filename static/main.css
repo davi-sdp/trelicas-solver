@@ -1,3 +1,10 @@
+/* Reset Global para evitar que elementos escapem da tela */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 :root {
   --bg: #f5f7fb;
   --surface: #ffffff;
@@ -7,19 +14,110 @@
   --text-muted: #5f6c7d;
   --shadow: 0 16px 40px rgba(36, 70, 110, 0.08);
   --radius: 18px;
+  --danger: #e11d48;
+  --danger-bg: #fff1f2;
+  --focus-ring: 0 0 0 4px rgba(30, 136, 229, 0.14);
 }
+
+/* Navbar & Menu */
+.navbar {
+  width: 100%;
+  background: var(--surface);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-container {
+  max-width: 1120px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+}
+
+.logo {
+  font-weight: 800;
+  font-size: 1.4rem;
+  color: var(--primary);
+  text-decoration: none;
+  letter-spacing: -0.5px;
+}
+
+.nav-menu {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-muted);
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+}
+
+.menu-checkbox {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+}
+
+.menu-checkbox:focus-visible ~ .menu-icon {
+  box-shadow: var(--focus-ring);
+  border-radius: 8px;
+}
+
+.menu-icon {
+  display: none; /* Reativado dentro do media query mobile */
+  cursor: pointer;
+  padding: 10px;
+  width: 44px;
+  height: 44px;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-icon span, 
+.menu-icon span::before, 
+.menu-icon span::after {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--text);
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.menu-icon span::before, 
+.menu-icon span::after {
+  content: '';
+  position: absolute;
+  left: 0;
+}
+
+.menu-icon span::before { top: -8px; }
+.menu-icon span::after { bottom: -8px; }
 
 html,
 body {
-  margin: 0;
   min-height: 100%;
+  overflow-x: hidden; /* Garante que nada transborde horizontalmente */
 }
 
 body {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 40px 20px;
+  display: block; /* Permite scroll natural com a navbar fixa */
+  min-height: 100vh;
   font-size: 16px;
   font-family: "Inter", "Roboto", sans-serif;
   line-height: 1.6;
@@ -29,7 +127,7 @@ body {
 
 main {
   width: min(1120px, 100%); /* Limita a largura do conteúdo principal */
-  padding: 20px;
+  padding: 30px 20px;
   display: flex;
   flex-direction: column;
   max-width: 1200px;
@@ -56,6 +154,7 @@ label {
     flex-direction: column;
     gap: 8px;
     color: var(--text-muted);
+    font-weight: 600;
     width: fit-content; /* Impede que a label estique horizontalmente sem necessidade */
 }
 
@@ -64,11 +163,6 @@ label {
   display: flex;
   flex-direction: column;
   gap: 10px;
-}
-
-label {
-  font-weight: 600;
-  color: var(--text-muted);
 }
 
 input,
@@ -88,7 +182,7 @@ select:focus,
 textarea:focus {
   outline: none;
   border-color: var(--primary);
-  box-shadow: 0 0 0 4px rgba(30, 136, 229, 0.14);
+  box-shadow: var(--focus-ring);
 }
 
 button,
@@ -113,6 +207,15 @@ button:hover,
 button:active,
 .button:active {
   transform: translateY(0);
+}
+
+button:focus-visible,
+.button:focus-visible,
+.btn-small:focus-visible,
+.nav-link:focus-visible,
+.menu-icon:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
 }
 
 .table {
@@ -148,8 +251,10 @@ ul[id$="-ul"] {
 
 ul[id$="-ul"] li {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
   padding: 12px 18px;
   background: var(--surface);
   border: 1px solid #dde4f2;
@@ -187,9 +292,9 @@ ul[id$="-ul"] li:hover {
 }
 
 .btn-danger:hover {
-  background: #fff1f2;
-  color: #e11d48;
-  border-color: #e11d48;
+  background: var(--danger-bg);
+  color: var(--danger);
+  border-color: var(--danger);
 }
 
 .footer {
@@ -199,17 +304,95 @@ ul[id$="-ul"] li:hover {
   font-size: 0.95rem;
 }
 
-@media (max-width: 680px) {
-  body {
-    padding: 24px 16px;
+#calculate-button {
+  margin-top: 30px;
+}
+
+.section-title {
+  margin-top: 50px;
+}
+
+#sobre {
+  margin-top: 60px;
+  padding-top: 40px;
+  border-top: 1px solid #dde4f2;
+}
+
+.error-text {
+  color: var(--danger);
+}
+
+#diagram-image {
+  max-width: 100%;
+  height: auto;
+}
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .menu-icon {
+    display: inline-flex;
   }
+
+  .nav-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--surface);
+    flex-direction: column;
+    gap: 0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+  }
+
+  .nav-menu li {
+    border-top: 1px solid #edf2f8;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 16px 24px;
+  }
+
+  .menu-checkbox:checked ~ .nav-menu {
+    max-height: 300px;
+  }
+
+  /* Animação do X no hambúrguer */
+  .menu-checkbox:checked ~ .menu-icon span { background: transparent; }
+  .menu-checkbox:checked ~ .menu-icon span::before { transform: rotate(45deg); top: 0; }
+  .menu-checkbox:checked ~ .menu-icon span::after { transform: rotate(-45deg); bottom: 0; }
 
   .header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 15px;
   }
 
-  .card {
-    padding: 24px;
+  .forcas, .posicao {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Ajustamos para que apenas labels de formulário e inputs fiquem full-width */
+  form label, 
+  input, 
+  select {
+    width: 100%;
+  }
+
+  ul[id$="-ul"] li:hover {
+    transform: none; /* Remove animação que pode causar scroll lateral no mobile */
+  }
+
+  button, .button {
+    width: 100%;
   }
 }

@@ -12,10 +12,19 @@
   </head>
 
   <body>
-    <header class="header">
-      <h1>Treliça Solver</h1>
-      <h2>Calculadora Web de Treliças</h2>
-    </header>
+    <nav class="navbar">
+      <div class="nav-container">
+        <input type="checkbox" id="menu-toggle" class="menu-checkbox" />
+        <label for="menu-toggle" class="menu-icon">
+          <span></span>
+        </label>
+        <a href="#" class="logo">Treliça Solver</a>
+        <ul class="nav-menu">
+          <li><a href="#" class="nav-link">Calcular Treliça</a></li>
+          <li><a href="#sobre" class="nav-link">Sobre</a></li>
+        </ul>
+      </div>
+    </nav>
     <main>
       <p>
         Bem-vindo ao Treliça Solver, a ferramenta definitiva para calcular as
@@ -116,9 +125,9 @@
       <ul id="supports-ul"></ul>
     </div>
 
-    <button id="calculate-button" class="button" style="margin-top: 30px;">Calcular Treliça</button>
+    <button id="calculate-button" class="button">Calcular Treliça</button>
 
-    <h2 style="margin-top: 50px;">Resultados</h2>
+    <h2 class="section-title">Resultados</h2>
     <div id="results-section">
       <h3>Reações nos Apoios</h3>
       <div id="reactions-output">
@@ -132,9 +141,18 @@
 
       <h3>Diagrama da Treliça</h3>
       <div id="truss-diagram">
-        <img id="diagram-image" src="" alt="Diagrama da Treliça" style="max-width: 100%; height: auto; display: none;">
+        <img id="diagram-image" src="" alt="Diagrama da Treliça" class="hidden">
       </div>
     </div>
+
+    <section id="sobre">
+      <h2>Sobre o Treliça Solver</h2>
+      <p>
+        Esta ferramenta foi desenvolvida para auxiliar estudantes e engenheiros na análise de estruturas isostáticas. 
+        O sistema utiliza o método matricial para garantir precisão no cálculo de esforços internos em todas as barras, 
+        além de fornecer uma visualização clara das reações de apoio.
+      </p>
+    </section>
     </main>
 
     <script>
@@ -439,15 +457,15 @@
           // Display diagram
           if (data.diagram_image) {
             diagramImage.src = `data:image/png;base64,${data.diagram_image}`;
-            diagramImage.style.display = 'block';
+            diagramImage.classList.remove('hidden');
           } else {
-            diagramImage.style.display = 'none';
+            diagramImage.classList.add('hidden');
           }
 
         } catch (error) {
           console.error('Erro:', error);
-          reactionsOutput.innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
-          diagramImage.style.display = 'none';
+          reactionsOutput.innerHTML = `<p class="error-text">Erro: ${error.message}</p>`;
+          diagramImage.classList.add('hidden');
         }
       });
     </script>
