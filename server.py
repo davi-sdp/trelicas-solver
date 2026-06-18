@@ -11,11 +11,11 @@ from visualizer import generate_truss_diagram
 
 app = FastAPI()
 
-# Monta a pasta de arquivos estáticos (CSS, JS, etc.)
+# Monta a pasta de arquivos estáticos
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Configura o Jinja2 para servir templates HTML
-templates = Jinja2Templates(directory=".")
+templates = Jinja2Templates(directory=[".", "static"])
 
 class Node(BaseModel):
     x: float
