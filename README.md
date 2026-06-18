@@ -1,6 +1,6 @@
 # Treliça Solver
 
-Um aplicativo web para calcular as reações de apoio em treliças isostáticas simples e visualizar o esquema da treliça com forças e reações. Desenvolvido com FastAPI para o backend e HTML/CSS/JavaScript para o frontend, utilizando Matplotlib para a geração dos diagramas.
+Uma solução web para calcular as reações de apoio em treliças isostáticas simples e visualizar o esquema da treliça com forças e reações. Desenvolvido com FastAPI para o backend e HTML/CSS/JavaScript para o frontend, utilizando Matplotlib para a geração dos diagramas.
 
 ![alt text](imgs/screenshot.png)
 > Página inicial do programa
@@ -15,7 +15,7 @@ Um aplicativo web para calcular as reações de apoio em treliças isostáticas 
 
 ## Pesquisa de Mercado
 
-A base estratégica e o entendimento das necessidades dos usuários podem ser consultados na nossa [Pesquisa de Mercado](pesquisa_de_mercado.md).
+A base estratégica e o entendimento das necessidades dos usuários podem ser consultados na nossa [Pesquisa de Mercado](./docs/pesquisa_de_mercado.md).
 
 ## Fundamentos Teóricos
 
@@ -112,12 +112,26 @@ Por padrão, o nosso nosso sistema utiliza uma precisão de **6 casas decimais**
 ```
 trelicas-solver/
 ├── static/main.css       # Estilos CSS para o frontend
-├── index.html            # Página HTML principal da aplicação
+├── static/index.html            # Página HTML principal da aplicação
 ├── server.py             # Backend FastAPI para servir o site e processar requisições
 ├── solver_core.py        # Lógica principal de cálculo das reações da treliça
 ├── solver_ori.py         # Lógica original do resolvedor de treliças (full terminal, sem interação gráfica)
 ├── visualizer.py         # Lógica para gerar os diagramas da treliça com Matplotlib
 ├── utils.py              # Funções utilitárias (entrada, interseção, equação da reta, momentos)
 ├── tests.py              # Casos de teste (atualmente não integrado ao web app, mas útil para o core)
+├── imgs/                # Imagens do projeto
+├── docs/pesquisa_de_mercado.md # Pesquisa de mercado
 └── README.md             # Este arquivo
 ```
+
+## Referências
+
+### Das lógicas
+- [Solução de Treliças - Método de Rigidez Matricial Direta](https://en.wikipedia.org/wiki/Direct_stiffness_method) (primeiro acesso em 15/6/2026)
+- [Resultados da Web1 CAPÍTULO IV TRELIÇAS ISOSTÁTICAS I. DEFINIÇÃO](https://www.politecnica.pucrs.br/professores/mregina/ENGENHARIA_-_Resistencia_dos_Materiais_I_-_EM/Resistencia_I_EM_04_Trelicas.pdf) (primeiro acesso em 30/5/2026)
+
+### Dos códigos (acessos de 20/5/2026 até 16/6/2026)
+- [Documentação FastAPI](https://fastapi.tiangolo.com/)
+- [Documentação Matplotlib](https://matplotlib.org/stable/)
+- [Documentação NumPy](https://numpy.org/)
+- [Documentação Uvicorn](https://www.uvicorn.org/)
