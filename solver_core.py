@@ -111,11 +111,9 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
                 # Vetor de Carga b: forças conhecidas (externas + reações) que devem ser equilibradas pelas barras
                 b_vec = np.zeros(2 * n_nos)
                 
-                for i, (n1, n2) in enumerate(bars_data):
-                    # Calcula o comprimento e os cossenos diretores da barra
-                    dx, dy = coords_x[n2] - coords_x[n1], coords_y[n2] - coords_y[n1]
-                    L = math.sqrt(dx**2 + dy**2)
-                    ux, uy = dx/L, dy/L # Vetor unitário na direção da barra
+                for i, braco in enumerate(bracos_obj):
+                    n1, n2 = braco.no1.id, braco.no2.id
+                    ux, uy = braco.c, braco.s # Usa os cossenos diretores já calculados no objeto
                     
                     # A força da barra 'i' atua nos nós n1 e n2 com direções opostas
                     # No nó de origem (n1):
@@ -136,8 +134,8 @@ def solve_truss_reactions(nodes_data, bars_data, forces_data, supports_data):
                         # Se a força é positiva, a barra está sob tração (puxando o nó)
                         t = "Tração" if val > 1e-6 else ("Compressão" if val < -1e-6 else "Nula")
                         bar_forces.append({'f': abs(val), 'type': t})
-                except:
-                    pass
+                except Exception as e:
+                    message += f"Erro no cálculo dos esforços internos: {str(e)}. "
 
     elif len(apoios_fixos) == 0:
         message = "AVISO: Nenhum apoio fixo definido. Reações não calculadas."
