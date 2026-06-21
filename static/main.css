@@ -278,7 +278,7 @@ ul[id$="-ul"] li:hover {
   font-size: 0.95rem;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 768px) {
   body {
     padding: 16px 12px;
     text-align: left;
@@ -289,29 +289,25 @@ ul[id$="-ul"] li:hover {
     font-size: 0.9rem;
     border-radius: 8px;
   }
-  header .logo {
-    height: 30px;
+
+  header {
+    margin-bottom: -17%;
+    padding-left: 0;
   }
 
-  header h1 h2{
-    display: none;
-  }
-
-  header h1 {
-    font-size: 1.3rem;
-  }
-
+  header h1,
   header h2 {
-    font-size: 0.9rem;
+    display: none;
   }
 
   .bemvindo h1 {
     font-size: 1.8rem;
+    text-align: center;
   }
 
   .bemvindo p {
     font-size: 0.95rem;
-    text-align: left;
+    text-align: justify;
   }
 
   .info {
@@ -322,16 +318,13 @@ ul[id$="-ul"] li:hover {
     text-align: left;
   }
 
-  .card {
-    padding: 24px;
-  }
-
   .sessao {
     flex-direction: column;
     gap: 8px;
     margin-bottom: 24px;
     padding-bottom: 24px;
   }
+  
   #calculate-button {
     margin-left: 0%;
     margin-right: 0%;
