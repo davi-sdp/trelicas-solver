@@ -329,4 +329,8 @@ ul[id$="-ul"] li:hover {
     margin-left: 0%;
     margin-right: 0%;
   }
+
+  #sobre {
+    text-align: justify;
+  }
 }
