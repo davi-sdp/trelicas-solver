@@ -355,7 +355,7 @@
           const li = document.createElement('li');
           const idx = parseInt(nodeIdx);
           li.innerHTML = `
-            Apoio: Nó ${String.fromCharCode(65 + idx)} - ${type === 1 ? 'Fixo (Pino)' : type === 2 ? 'Móvel (Rolete Y)' : 'Móvel (Rolete X)'}
+            Apoio: Nó ${String.fromCharCode(65 + idx)} - ${type === 1 ? 'Fixo (Pino)' : type === 2 ? 'Móvel (Rolete X)' : 'Móvel (Rolete Y)'}
             <div class="actions-btns">
               <button class="btn-small" onclick="editSupport(${idx})">Editar</button>
               <button class="btn-small btn-danger" onclick="deleteSupport(${idx})">Apagar</button>
