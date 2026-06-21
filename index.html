@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Treliça Solver</title>
+    <meta
+      name="description"
+      content="Calcule as forças de apoio e forças internas de treliças durante seu curso de Mecanica dos Sólidos"
+    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/main.css" />
+    <link rel="icon" type="image/x-icon" href="/static/images/logo.svg"/>
+  </head>
+
+  <body>
+    <header>
+      <img src="/static/images/logo.svg" alt="Logo do Treliça Solver" class="logo" />
+      <h1>Treliça Solver</h1>
+      <h2>- Calculadora Web de Treliças</h2>
+    </header>
+    <main>
+      <div class="bemvindo">
+        <h1>Treliça Solver</h1>
+        <p>
+          Bem-vindo ao Treliça Solver, a ferramenta definitiva para calcular as forças de apoio e forças internas em treliças. Este site é projetado para estudantes de Mecanica dos Sólidos que desejam uma maneira fácil e eficiente de resolver problemas relacionados a treliças.
+        </p>
+      </div>
+
+    <ul class="info">
+      <b>Instruções:</b>
+      <li> Use os formulários abaixo para adicionar os nós, barras, forças externas e apoios da sua treliça.</li>
+      <li> As forças externas usam a convenção de sinais de 0° para representar a direção positiva do eixo X e 90° para representar a direção positiva do eixo Y.</li>
+      <li> Após inserir todos os dados, clique em "Calcular Treliça" para obter os resultados.</li>
+    </ul>
+
+    <h2>Dados de Entrada</h2>
+    <div class="sessao">
+      <div class="sessao-dados">
+        <h3>Nós</h3>
+        <form id="node-form">
+          <div class="forcas">
+            <label>
+              Coordenada X:
+              <input type="number" id="node-x" placeholder="Eixo X" required />
+            </label>
+            <label>
+              Coordenada Y:
+              <input type="number" id="node-y" placeholder="Eixo Y" required />
+            </label>
+            <button type="submit" class="btn">Adicionar Nó</button>
+          </div>
+        </form>
+      </div>
+      <div class="sessao-resultados">
+        <div id="nodes-list">
+          <h4>Nós Adicionados:</h4>
+          <ul id="nodes-ul"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sessao">
+      <div class="sessao-dados">
+        <h3>Barras</h3>
+        <form id="bar-form">
+          <div class="forcas">
+            <label for="bar-start-node">
+              Nó de Origem:
+              <select id="bar-start-node" required>
+                <option value="">Selecione</option>
+              </select>
+            </label>
+            <label for="bar-end-node">
+              Nó de Destino:
+              <select id="bar-end-node" required>
+                <option value="">Selecione</option>
+              </select>
+            </label>
+            <button type="submit" class="btn">Adicionar Barra</button>
+          </div>
+        </form>
+      </div>
+      <div class="sessao-resultados">
+        <div id="bars-list">
+          <h4>Barras Adicionadas:</h4>
+          <ul id="bars-ul"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sessao">
+      <div class="sessao-dados">
+        <h3>Forças Externas</h3>
+        <form id="force-form">
+          <div class="forcas">
+            <label>
+              Intensidade da Força [N]:
+              <input type="number" id="force-magnitude" placeholder="Valor da Força" required />
+            </label>
+            <label>
+              Ângulo [°] (anti-horário):
+              <input type="number" id="force-angle" placeholder="Ângulo (graus)" required />
+            </label>
+            <label for="force-node">
+              Nó de Aplicação:
+              <select id="force-node" required>
+                <option value="">Selecione</option>
+              </select>
+            </label>
+            <button type="submit" class="btn">Adicionar Força</button>
+          </div>
+        </form>
+      </div>
+      <div class="sessao-resultados">
+        <div id="forces-list">
+          <h4>Forças Adicionadas:</h4>
+          <ul id="forces-ul"></ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sessao">
+      <div class="sessao-dados">
+        <h3>Apoios</h3>
+        <form id="support-form">
+          <div class="forcas">
+            <label for="support-node">
+              Nó com Apoio:
+              <select id="support-node" required>
+                <option value="">Selecione</option>
+              </select>
+            </label>
+            <label for="support-type">
+              Tipo de Apoio:
+              <select id="support-type" required>
+                <option value="">Selecione</option>
+                <option value="1">Fixo (Pino)</option>
+                <option value="2">Móvel (Rolete X)</option>
+                <option value="3">Móvel (Rolete Y)</option>
+              </select>
+            </label>
+            <button type="submit" class="btn">Adicionar Apoio</button>
+          </div>
+        </form>
+      </div>
+      <div class="sessao-resultados">
+        <div id="supports-list">
+          <h4>Apoios Adicionados:</h4>
+          <ul id="supports-ul"></ul>
+        </div>
+      </div>
+    </div>
+    
+    <button id="calculate-button" class="btn">Calcular Treliça</button>
+
+
+    <div id="modal-overlay" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000; justify-content: center; align-items: center; flex-direction: column;">
+      <div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); text-align: center;">
+        <p id="modal-message" style="margin: 0 0 16px; font-size: 15px; color: #333;"></p>
+        <button id="modal-ok" class="btn" style="padding: 8px 24px;">OK</button>
+      </div>
+    </div>
+
+    <div id="warnings-list" style="display: none; margin-top: 20px; padding: 12px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; color: #856404;">
+      <h4 style="margin: 0 0 8px 0;">Avisos</h4>
+      <ul id="warnings-ul" style="margin: 0; padding-left: 20px;"></ul>
+    </div>
+    <div class="info">
+      <h2>Resultados</h2>
+      <div id="results-section">
+        <h3>Reações nos Apoios</h3>
+        <div id="reactions-output">
+          <p>Nenhuma reação calculada ainda.</p>
+        </div>
+
+        <h3>Esforços Internos</h3>
+        <div id="internal-forces-output">
+          <p>Aguardando cálculo...</p>
+        </div>
+
+        <h3>Diagrama da Treliça</h3>
+        <div id="truss-diagram">
+          <img id="diagram-image" src="" alt="Diagrama da Treliça" style="max-width: 100%; height: auto; display: none;">
+        </div>
+      </div>
+    </div>
+      <section id="sobre">
+        <h2>Sobre o Treliça Solver</h2>
+        <p>
+          Esta ferramenta foi desenvolvida para auxiliar estudantes e engenheiros na análise de estruturas isostáticas. 
+          O sistema utiliza o método matricial para garantir precisão no cálculo de esforços internos em todas as barras, 
+          além de fornecer uma visualização clara das reações de apoio.
+        </p>
+      </section>
+    </main>
+
+    <script>
+      const nodes = [];
+      const bars = [];
+      const forces = [];
+      let supports = {};
+
+      const warningsDiv = document.getElementById('warnings-list');
+      const warningsUl = document.getElementById('warnings-ul');
+
+      function findNodeAt(x, y) {
+        return nodes.findIndex(n => Math.abs(n.x - x) < 1e-6 && Math.abs(n.y - y) < 1e-6);
+      }
+
+      function findBar(n1, n2) {
+        return bars.findIndex(b => (b[0] === n1 && b[1] === n2) || (b[0] === n2 && b[1] === n1));
+      }
+
+      function orient(ax, ay, bx, by, cx, cy) {
+        return (bx - ax) * (cy - ay) - (by - ay) * (cx - ax);
+      }
+
+      function onSegment(ax, ay, bx, by, cx, cy) {
+        return Math.min(ax, bx) <= cx + 1e-9 && cx <= Math.max(ax, bx) + 1e-9
+            && Math.min(ay, by) <= cy + 1e-9 && cy <= Math.max(ay, by) + 1e-9;
+      }
+
+      function epsSign(v) {
+        return v < -1e-9 ? -1 : v > 1e-9 ? 1 : 0;
+      }
+
+      function segmentsIntersect(a, b, c, d) {
+        const o1 = orient(a.x, a.y, b.x, b.y, c.x, c.y);
+        const o2 = orient(a.x, a.y, b.x, b.y, d.x, d.y);
+        const o3 = orient(c.x, c.y, d.x, d.y, a.x, a.y);
+        const o4 = orient(c.x, c.y, d.x, d.y, b.x, b.y);
+        const s1 = epsSign(o1), s2 = epsSign(o2), s3 = epsSign(o3), s4 = epsSign(o4);
+        if (s1 === 0 && onSegment(a.x, a.y, b.x, b.y, c.x, c.y)) return true;
+        if (s2 === 0 && onSegment(a.x, a.y, b.x, b.y, d.x, d.y)) return true;
+        if (s3 === 0 && onSegment(c.x, c.y, d.x, d.y, a.x, a.y)) return true;
+        if (s4 === 0 && onSegment(c.x, c.y, d.x, d.y, b.x, b.y)) return true;
+        return s1 !== 0 && s2 !== 0 && s3 !== 0 && s4 !== 0
+            && s1 !== s2 && s3 !== s4;
+      }
+
+      function barsCross(i, j) {
+        const b1 = bars[i], b2 = bars[j];
+        if (b1[0] === b2[0] || b1[0] === b2[1] || b1[1] === b2[0] || b1[1] === b2[1]) return false;
+        return segmentsIntersect(
+          nodes[b1[0]], nodes[b1[1]],
+          nodes[b2[0]], nodes[b2[1]]
+        );
+      }
+
+      function countRestraints() {
+        let r = 0;
+        for (const tipo of Object.values(supports)) {
+          if (tipo === 1) r += 2;
+          else r += 1;
+        }
+        return r;
+      }
+
+      function clearWarnings() {
+        warningsUl.innerHTML = '';
+        warningsDiv.style.display = 'none';
+      }
+
+      function addWarning(msg) {
+        const li = document.createElement('li');
+        li.textContent = msg;
+        warningsUl.appendChild(li);
+        warningsDiv.style.display = 'block';
+      }
+
+      function showPopup(msg) {
+        document.getElementById('modal-message').textContent = msg;
+        const overlay = document.getElementById('modal-overlay');
+        overlay.style.display = 'flex';
+      }
+
+      document.getElementById('modal-ok').addEventListener('click', () => {
+        document.getElementById('modal-overlay').style.display = 'none';
+      });
+
+      const nodeForm = document.getElementById('node-form');
+      const nodeXInput = document.getElementById('node-x');
+      const nodeYInput = document.getElementById('node-y');
+      const nodesUl = document.getElementById('nodes-ul');
+
+      const barForm = document.getElementById('bar-form');
+      const barStartNodeSelect = document.getElementById('bar-start-node');
+      const barEndNodeSelect = document.getElementById('bar-end-node');
+      const barsUl = document.getElementById('bars-ul');
+
+      const forceForm = document.getElementById('force-form');
+      const forceMagnitudeInput = document.getElementById('force-magnitude');
+      const forceAngleInput = document.getElementById('force-angle');
+      const forceNodeSelect = document.getElementById('force-node');
+      const forcesUl = document.getElementById('forces-ul');
+
+      const supportForm = document.getElementById('support-form');
+      const supportNodeSelect = document.getElementById('support-node');
+      const supportTypeSelect = document.getElementById('support-type');
+      const supportsUl = document.getElementById('supports-ul');
+
+      const calculateButton = document.getElementById('calculate-button');
+      const reactionsOutput = document.getElementById('reactions-output');
+      const diagramImage = document.getElementById('diagram-image');
+
+      function renderNodes() {
+        nodesUl.innerHTML = '';
+        nodes.forEach((node, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            Nó ${String.fromCharCode(65 + index)}: (${node.x}, ${node.y})
+            <div class="actions-btns">
+              <button class="btn-small" onclick="editNode(${index})">Editar</button>
+              <button class="btn-small btn-danger" onclick="deleteNode(${index})">Apagar</button>
+            </div>
+          `;
+          nodesUl.appendChild(li);
+        });
+        updateNodeSelects();
+      }
+
+      function renderBars() {
+        barsUl.innerHTML = '';
+        bars.forEach((bar, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            Barra: Nó ${String.fromCharCode(65 + bar[0])} - Nó ${String.fromCharCode(65 + bar[1])}
+            <div class="actions-btns">
+              <button class="btn-small" onclick="editBar(${index})">Editar</button>
+              <button class="btn-small btn-danger" onclick="deleteBar(${index})">Apagar</button>
+            </div>
+          `;
+          barsUl.appendChild(li);
+        });
+      }
+
+      function renderForces() {
+        forcesUl.innerHTML = '';
+        forces.forEach((force, index) => {
+          const li = document.createElement('li');
+          li.innerHTML = `
+            Força: ${force.magnitude} N a ${force.angle}° no Nó ${String.fromCharCode(65 + force.node)}
+            <div class="actions-btns">
+              <button class="btn-small" onclick="editForce(${index})">Editar</button>
+              <button class="btn-small btn-danger" onclick="deleteForce(${index})">Apagar</button>
+            </div>
+          `;
+          forcesUl.appendChild(li);
+        });
+      }
+
+      function renderSupports() {
+        supportsUl.innerHTML = '';
+        Object.entries(supports).forEach(([nodeIdx, type]) => {
+          const li = document.createElement('li');
+          const idx = parseInt(nodeIdx);
+          li.innerHTML = `
+            Apoio: Nó ${String.fromCharCode(65 + idx)} - ${type === 1 ? 'Fixo (Pino)' : type === 2 ? 'Móvel (Rolete Y)' : 'Móvel (Rolete X)'}
+            <div class="actions-btns">
+              <button class="btn-small" onclick="editSupport(${idx})">Editar</button>
+              <button class="btn-small btn-danger" onclick="deleteSupport(${idx})">Apagar</button>
+            </div>
+          `;
+          supportsUl.appendChild(li);
+        });
+      }
+
+      window.deleteNode = (index) => {
+        clearWarnings();
+        nodes.splice(index, 1);
+        for (let i = bars.length - 1; i >= 0; i--) {
+          if (bars[i][0] === index || bars[i][1] === index) bars.splice(i, 1);
+          else {
+            if (bars[i][0] > index) bars[i][0]--;
+            if (bars[i][1] > index) bars[i][1]--;
+          }
+        }
+        for (let i = forces.length - 1; i >= 0; i--) {
+          if (forces[i].node === index) forces.splice(i, 1);
+          else if (forces[i].node > index) forces[i].node--;
+        }
+        const newSupports = {};
+        Object.entries(supports).forEach(([nodeIdx, type]) => {
+          const idx = parseInt(nodeIdx);
+          if (idx !== index) {
+            const newIdx = idx > index ? idx - 1 : idx;
+            newSupports[newIdx] = type;
+          }
+        });
+        supports = newSupports;
+
+        renderNodes();
+        renderBars();
+        renderForces();
+        renderSupports();
+      };
+
+      window.editNode = (index) => {
+        clearWarnings();
+        const node = nodes[index];
+        nodeXInput.value = node.x;
+        nodeYInput.value = node.y;
+        window.deleteNode(index);
+      };
+
+      window.deleteBar = (index) => {
+        clearWarnings();
+        bars.splice(index, 1);
+        renderBars();
+      };
+
+      window.editBar = (index) => {
+        const bar = bars[index];
+        barStartNodeSelect.value = bar[0];
+        barEndNodeSelect.value = bar[1];
+        window.deleteBar(index);
+      };
+
+      window.deleteForce = (index) => {
+        clearWarnings();
+        forces.splice(index, 1);
+        renderForces();
+      };
+
+      window.editForce = (index) => {
+        const force = forces[index];
+        forceMagnitudeInput.value = force.magnitude;
+        forceAngleInput.value = force.angle;
+        forceNodeSelect.value = force.node;
+        window.deleteForce(index);
+      };
+
+      window.deleteSupport = (nodeIdx) => {
+        clearWarnings();
+        delete supports[nodeIdx];
+        renderSupports();
+      };
+
+      window.editSupport = (nodeIdx) => {
+        const type = supports[nodeIdx];
+        supportNodeSelect.value = nodeIdx;
+        supportTypeSelect.value = type;
+        window.deleteSupport(nodeIdx);
+      };
+
+      function updateNodeSelects() {
+        const selects = [barStartNodeSelect, barEndNodeSelect, forceNodeSelect, supportNodeSelect];
+        selects.forEach(select => {
+          select.innerHTML = '<option value="">Selecione</option>';
+          nodes.forEach((node, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.textContent = `Nó ${String.fromCharCode(65 + index)} (${node.x}, ${node.y})`;
+            select.appendChild(option);
+          });
+        });
+      }
+
+      nodeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearWarnings();
+        const x = parseFloat(nodeXInput.value);
+        const y = parseFloat(nodeYInput.value);
+        const dup = findNodeAt(x, y);
+        if (dup !== -1) {
+          showPopup(`Já existe um nó na posição (${x}, ${y}): Nó ${String.fromCharCode(65 + dup)}.`);
+          return;
+        }
+        nodes.push({ x, y });
+        nodeXInput.value = '';
+        nodeYInput.value = '';
+        renderNodes();
+      });
+
+      barForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearWarnings();
+        const startNodeIdx = parseInt(barStartNodeSelect.value);
+        const endNodeIdx = parseInt(barEndNodeSelect.value);
+
+        if (startNodeIdx === endNodeIdx) {
+          showPopup("Nó de origem não pode ser igual ao de destino.");
+          return;
+        }
+
+        if (findBar(startNodeIdx, endNodeIdx) !== -1) {
+          showPopup("Esta barra já foi adicionada.");
+          return;
+        }
+
+        const nA = nodes[startNodeIdx], nB = nodes[endNodeIdx];
+        let crossing = false;
+        for (let i = 0; i < bars.length; i++) {
+          const b = bars[i];
+          if (b[0] === startNodeIdx || b[0] === endNodeIdx || b[1] === startNodeIdx || b[1] === endNodeIdx) continue;
+          const nC = nodes[b[0]], nD = nodes[b[1]];
+          if (segmentsIntersect(nA, nB, nC, nD)) {
+            crossing = true;
+            break;
+          }
+        }
+
+        bars.push([startNodeIdx, endNodeIdx]);
+        barStartNodeSelect.value = '';
+        barEndNodeSelect.value = '';
+        renderBars();
+
+        if (crossing) {
+          addWarning(`A nova barra ${String.fromCharCode(65 + startNodeIdx)}-${String.fromCharCode(65 + endNodeIdx)} cruza com outra barra existente.`);
+        }
+      });
+
+      forceForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearWarnings();
+        const magnitude = parseFloat(forceMagnitudeInput.value);
+        const angle = parseFloat(forceAngleInput.value);
+        const nodeIdx = parseInt(forceNodeSelect.value);
+        const existing = forces.findIndex(f => f.node === nodeIdx && Math.abs(f.angle - angle) < 1e-6);
+        if (existing !== -1) {
+          showPopup(`Já existe uma força com o mesmo ângulo no Nó ${String.fromCharCode(65 + nodeIdx)}. As forças no mesmo nó serão somadas vetorialmente.`);
+        }
+        forces.push({ magnitude, angle, node: nodeIdx });
+        forceMagnitudeInput.value = '';
+        forceAngleInput.value = '';
+        forceNodeSelect.value = '';
+        renderForces();
+      });
+
+      supportForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        clearWarnings();
+        const nodeIdx = parseInt(supportNodeSelect.value);
+        const type = parseInt(supportTypeSelect.value);
+        if (supports[nodeIdx] !== undefined) {
+          showPopup(`O Nó ${String.fromCharCode(65 + nodeIdx)} já possui um apoio. Remova-o antes de adicionar outro.`);
+          return;
+        }
+        supports[nodeIdx] = type;
+        supportNodeSelect.value = '';
+        supportTypeSelect.value = '';
+        renderSupports();
+      });
+
+      calculateButton.addEventListener('click', async () => {
+        clearWarnings();
+
+        if (nodes.length === 0) {
+          showPopup("Adicione pelo menos um nó antes de calcular.");
+          return;
+        }
+        if (bars.length === 0) {
+          showPopup("Adicione pelo menos uma barra antes de calcular.");
+          return;
+        }
+        if (Object.keys(supports).length === 0) {
+          showPopup("Adicione pelo menos um apoio antes de calcular.");
+          return;
+        }
+
+        const m = bars.length;
+        const j = nodes.length;
+        const r = countRestraints();
+        const grau = m + r - 2 * j;
+        if (grau < 0) {
+          addWarning(`Grau de hiperestaticidade: ${grau} — Treliça HIPOSTÁTICA (mecanismo). Faltam ${-grau} restrição(ões).`);
+        } else if (grau > 0) {
+          addWarning(`Grau de hiperestaticidade: ${grau} — Treliça HIPERESTÁTICA. Existem ${grau} restrição(ões) em excesso.`);
+        }
+
+        for (let i = 0; i < bars.length; i++) {
+          for (let j = i + 1; j < bars.length; j++) {
+            if (barsCross(i, j)) {
+              addWarning(`As barras ${String.fromCharCode(65 + bars[i][0])}-${String.fromCharCode(65 + bars[i][1])} e ${String.fromCharCode(65 + bars[j][0])}-${String.fromCharCode(65 + bars[j][1])} cruzam-se.`);
+            }
+          }
+        }
+
+        const payload = {
+          nodes: nodes,
+          bars: bars,
+          forces: forces,
+          supports: supports
+        };
+
+        try {
+          const response = await fetch('/solve', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.detail || 'Erro ao calcular a treliça.');
+          }
+
+          const data = await response.json();
+
+          let reactionsHtml = '<ul>';
+          if (data.reactions && Object.keys(data.reactions).length > 0) {
+            for (const nodeIdx in data.reactions) {
+              const nodeLetter = String.fromCharCode(65 + parseInt(nodeIdx));
+              const reaction = data.reactions[nodeIdx];
+              reactionsHtml += `<li>Nó ${nodeLetter}: `;
+              if (reaction.Rx !== undefined) reactionsHtml += `Rx = ${reaction.Rx.toFixed(6)} N`;
+              if (reaction.Ry !== undefined) reactionsHtml += `, Ry = ${reaction.Ry.toFixed(6)} N`;
+              reactionsHtml += `</li>`;
+            }
+            reactionsHtml += `<li>Verificação: ΣFx = ${data.equilibrium_fx.toFixed(6)} N, ΣFy = ${data.equilibrium_fy.toFixed(6)} N [${data.equilibrium_ok ? 'OK' : '✗ PROBLEMA!'}]</li>`;
+          } else {
+            reactionsHtml += '<li>Nenhuma reação calculada. ' + (data.message || '') + '</li>';
+          }
+          reactionsHtml += '</ul>';
+          reactionsOutput.innerHTML = reactionsHtml;
+
+          let barsHtml = '<ul>';
+          if (data.bar_forces && data.bar_forces.length > 0) {
+            data.bar_forces.forEach((bf, idx) => {
+              const n1 = String.fromCharCode(65 + bars[idx][0]);
+              const n2 = String.fromCharCode(65 + bars[idx][1]);
+              barsHtml += `<li>Barra ${n1}${n2}: <b>${bf.f.toFixed(6)} N</b> (${bf.type})</li>`;
+            });
+          } else {
+            barsHtml += '<li>Esforços internos não calculados ou estrutura hipostática.</li>';
+          }
+          barsHtml += '</ul>';
+          document.getElementById('internal-forces-output').innerHTML = barsHtml;
+
+          if (data.diagram_image) {
+            diagramImage.src = `data:image/png;base64,${data.diagram_image}`;
+            diagramImage.style.display = 'block';
+          } else {
+            diagramImage.style.display = 'none';
+          }
+
+        } catch (error) {
+          console.error('Erro:', error);
+          reactionsOutput.innerHTML = `<p style="color: red;">Erro: ${error.message}</p>`;
+          diagramImage.style.display = 'none';
+        }
+      });
+    </script>
+  </body>
+</html>
