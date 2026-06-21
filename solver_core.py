@@ -80,7 +80,7 @@ def solve_truss(nodes, bars, forces, supports, E=29000.0, A=5.0):
         q = (E * A / L) * np.dot([c, s, -c, -s], D_g[dofs])
         if abs(q) < 1e-6:
             bar_forces.append({'f': 0.0, 'type': 'Nula'})
-        elif q > 0:
+        elif q < 0:
             bar_forces.append({'f': round(abs(q), 6), 'type': 'Tração'})
         else:
             bar_forces.append({'f': round(abs(q), 6), 'type': 'Compressão'})

@@ -70,15 +70,15 @@ def generate_truss_diagram(coords_x, coords_y, bars, fx, fy, rx, ry, apoios, bar
             ax.plot(x_ap, y_ap, '^', markersize=16, color='darkgreen', zorder=3, label=lbl)
             label_fixo_usado = True
         elif tipo == 2:
-            lbl = 'Apoio Móvel (Rolete Y)' if not label_movel_y_usado else ""
+            lbl = 'Apoio Móvel (Rolete X)' if not label_movel_x_usado else ""
             ax.plot(x_ap, y_ap, 'o', markersize=12, color='darkgreen', zorder=3,
                     markerfacecolor='none', markeredgewidth=2, label=lbl)
-            label_movel_y_usado = True
+            label_movel_x_usado = True
         else:
-            lbl = 'Apoio Móvel (Rolete X)' if not label_movel_x_usado else ""
+            lbl = 'Apoio Móvel (Rolete Y)' if not label_movel_y_usado else ""
             ax.plot(x_ap, y_ap, 's', markersize=12, color='darkgreen', zorder=3,
                     markerfacecolor='none', markeredgewidth=2, label=lbl)
-            label_movel_x_usado = True
+            label_movel_y_usado = True
 
     for i in range(len(coords_x)):
         ax.plot(coords_x[i], coords_y[i], 'ko', markersize=6, zorder=5)
