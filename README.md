@@ -21,12 +21,7 @@ A base estratégica e o entendimento das necessidades dos usuários podem ser co
 
 O Treliça Solver utiliza princípios fundamentais da Mecânica Estática:
 
-1.  **Reações de Apoio**: São calculadas utilizando as três equações de equilíbrio para um corpo rígido no plano:
-    *   $\sum F_x = 0$ (Soma das forças horizontais)
-    *   $\sum F_y = 0$ (Soma das forças verticais)
-    *   $\sum M_z = 0$ (Soma dos momentos em relação a um ponto, geralmente o apoio fixo)
-
-2.  **Esforços Internos (Método dos Nós via Abordagem Matricial)**: 
+1.  **Reações de Apoio** e **Esforços Internos**: São calculadas utilizando o Método de Rigidez Direta: 
     Para determinar a força em cada barra, o nosso sistema resolve o equilíbrio de translação em cada nó simultaneamente.
     *   **Formulação**: O problema é montado na forma de um sistema linear $[A]\{f\} = \{b\}$.
         *   $[A]$ (**Matriz de Coeficientes**): Contém os componentes geométricos (cossenos diretores $cos \theta$ e $sen \theta$) de cada barra em relação aos nós.
@@ -34,7 +29,7 @@ O Treliça Solver utiliza princípios fundamentais da Mecânica Estática:
         *   $\{b\}$ (**Vetor de Cargas**): Contém as forças externas e reações de apoio aplicadas.
     *   **Resolução**: Utilizamos o método de **Mínimos Quadrados Lineares** (`numpy.linalg.lstsq`). Essa escolha permite que o solver lide com sistemas determinados e fornece uma solução estável mesmo se houver pequenas redundâncias numéricas.
 
-3.  **Convenção de Sinais**:
+2.  **Convenção de Sinais**:
     *   Resultados **positivos** indicam **Tração** (a barra está sendo "esticada").
     *   Resultados **negativos** indicam **Compressão** (a barra está sendo "esmagada").
 
